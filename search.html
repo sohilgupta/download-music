@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Search</title>
+  </head>
+  <body>
+    <div id="buttons">
+      <label> <input id="query"  onkeydown="if (event.keyCode == 13) {keyWordsearch();}" type="text"/><button id="search-button"  onclick="keyWordsearch()">Search</button></label>
+    </div>
+    <div id="search-container">
+    </div>
+    <script>
+    function keyWordsearch(){
+            gapi.client.setApiKey('AIzaSyDuUS03BPMIbL_nUQmWUooCSCVx-vwUp2c');
+            gapi.client.load('youtube', 'v3', function() {
+                    makeRequest();
+            });
+    }
+    function makeRequest() {
+            var q = $('#query').val();
+            var request = gapi.client.youtube.search.list({
+                       q: q,
+                    part: 'snippet' ,
+                    maxResults: 10                       
+            });
+            request.execute(function(response) {
+                    $('#search-container').empty()
+                var srchItems = response.result.items;                      
+                $.each(srchItems, function(index, item) {
+                vidTitle = item.snippet.title;  
+                vidThumburl =  item.snippet.thumbnails.default.url;
+                vidId = item.id.videoId;                 
+                vidThumbimg = '<pre><img id="thumb" src="'+vidThumburl+'" alt="No  Image Available." style="width:204px;height:128px"></pre>';   
+                vidDownload = '<pre><a href="http://youtubeinmp3.com/fetch/?video=http://www.youtube.com/watch?v=' + vidId + '" style="text-decoration:none;color:#03a730;">Download</a></pre>';               
+
+                $('#search-container').append('<pre>' + vidTitle + vidThumbimg +  vidDownload + '</pre>'); 
+            	});
+
+            });
+    }
+ </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    
+    <script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
+  </body>
+</html>
